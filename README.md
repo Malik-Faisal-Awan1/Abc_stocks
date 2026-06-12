@@ -1,72 +1,89 @@
+<div align="center">
+
 # ABC Stocks Dashboard
 
-A single-asset financial analytics dashboard in Streamlit that outputs probabilistic directional classifications for equities, backed by technical indicators and pre-scored sentiment data.
+**A minimalist, AI-powered financial dashboard.**
 
-## Setup Instructions
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-FF4B4B.svg?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.4+-F7931E.svg?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Configure environment:
-   Copy `.env.example` to `.env` and fill in your Finnhub API key.
-
-3. Run the app:
-   ```bash
-   streamlit run app/streamlit_app.py
-   ```
-
-## Mock Mode vs Live Mode
-By default, the app runs in **Mock Mode** using local static JSON files to prevent exhausting API limits during development. 
-
-To enable live fetching from the Finnhub API without modifying `config.py`, run with the environment variable override:
-```bash
-USE_MOCK=false streamlit run app/streamlit_app.py
-```
-Or set `USE_MOCK=false` in your `.env` file.
-
-## Integration Tests
-Integration tests run against the live Finnhub API and cost API quota. They are skipped by default.
-To run integration tests:
-```bash
-RUN_INTEGRATION=true pytest tests/test_integration.py -v
-```
-
-## Architecture Overview
-- `app/`: Presentation layer (Streamlit). No business logic.
-- `src/`: Data fetching, indicators calculation, and sentiment parsing. No Streamlit imports.
-- `tests/`: Pytest suite for unit testing `src` components.
-- `data/`: Mock data files and runtime caching.
-
-## Disclaimer
-This is a decision-support tool, not a trading signal generator. Past performance does not guarantee future results.
+</div>
 
 ---
 
-## Phase 3 — ML + Dark Theme (2026-06-13)
+## ⚡ Overview
 
-### New Features
-- **Anomaly Detection** (`src/anomaly_detector.py`): Isolation Forest trained on daily OHLCV features flags statistically unusual trading days with orange triangle markers on the price chart.
-- **Signal Classifier** (`src/ml_classifier.py`): Logistic Regression trained on backtesting signal_log predicts whether the current signal is likely correct. Confidence % displayed in Tab 1.
-- **ML Insights Tab** (Tab 3): Feature importance bar chart, anomaly date table, and methodology note always visible.
-- **Dark Theme**: Financial dark palette via `.streamlit/config.toml` and consistent `CHART_TEMPLATE` across all Plotly charts.
+ABC Stocks Dashboard is a premium financial analysis tool combining traditional technical indicators with modern Machine Learning techniques. It features a completely custom, ultra-minimalist dark UI utilizing glassmorphism and modern web typography.
 
-### Phase 3 Setup
+### Core Features
+*   **Technical Analysis:** Computes RSI, MACD, and a proprietary Composite Momentum Score.
+*   **Backtesting Engine:** Replays signal logic over the last 90 trading days to compute hypothetical hit-rates and portfolio curves.
+*   **Machine Learning Insights:**
+    *   **Signal Confidence:** Logistic Regression models trained on the fly using session data to predict the reliability of current trading signals.
+    *   **Anomaly Detection:** Unsupervised Isolation Forests flagging statistically unusual trading days based on price/volume action.
+*   **Local Data Ingestion:** Downloads real OHLCV market data via `yfinance` to operate completely offline without restrictive paid API limits.
+
+---
+
+## 🚀 Quick Start
+
+Follow these steps to get the dashboard running locally on any machine.
+
+### 1. Clone the Repository
 ```bash
-pip install -r requirements.txt   # now includes scikit-learn>=1.4.0 and joblib>=1.3.0
+git clone https://github.com/Malik-Faisal-Awan1/Abc_stocks.git
+cd Abc_stocks
+```
+
+### 2. Set Up Virtual Environment
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment
+The app requires an `.env` file to configure its run mode.
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Ensure USE_MOCK=true is set in the .env file to use local data
+```
+
+### 5. Download Local Market Data
+Because premium APIs can be restrictive, the app fetches historical data directly from Yahoo Finance and saves it locally.
+```bash
+python scripts/download_local_data.py
+```
+*(This will fetch 180 days of accurate data for 15 major tickers like AAPL, MSFT, NVDA, TSLA, etc.)*
+
+### 6. Launch the Dashboard
+```bash
 streamlit run app/streamlit_app.py
 ```
+The app will open automatically in your browser at `http://localhost:8501`.
 
-### Running Tests
+---
+
+## 🧪 Testing
+
+The codebase maintains strict reliability with a full Pytest suite. To verify the integrity of the data fetching, backtesting, and ML engines:
+
 ```bash
-# Windows — set your API key then run:
-$env:FINNHUB_API_KEY="your_key_here"
-python -m pytest tests/ -v --ignore=tests/test_integration.py
-# Expected: 48 passed, 0 failed
+pytest tests/ -v --ignore=tests/test_integration.py
 ```
 
-### ML Model Notes
-- Models train fresh each session per ticker. Saved to `models/<TICKER>_classifier.pkl` (gitignored).
-- Minimum 20 non-neutral signals required for classifier training. Falls back gracefully.
-- All accuracy figures have high variance at 57–80 samples — stated in the UI.
-- These are educational demonstrations, not production trading signals.
+---
+
+<div align="center">
+  <i>Designed with precision.</i>
+</div>
