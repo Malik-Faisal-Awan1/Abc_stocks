@@ -1,0 +1,7 @@
+[theme]
+base = "dark"
+primaryColor = "#3B82F6"
+backgroundColor = "#0A0A0B"      # Deep premium dark (almost black)
+secondaryBackgroundColor = "#121214" # Slight contrast for sidebar
+textColor = "#E2E8F0"          # Soft white/grey
+font = "sans serif"            # Let system UI fonts take over

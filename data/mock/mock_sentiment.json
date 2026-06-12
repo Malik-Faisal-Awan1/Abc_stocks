@@ -1,0 +1,15 @@
+{
+  "buzz": {
+    "articlesInLastWeek": 24,
+    "buzz": 1.2,
+    "weeklyAverage": 20.0
+  },
+  "companyNewsScore": 0.623,
+  "sectorAverageBullishPercent": 0.612,
+  "sectorAverageNewsScore": 0.541,
+  "sentiment": {
+    "bearishPercent": 0.32,
+    "bullishPercent": 0.68
+  },
+  "symbol": "AAPL"
+}
