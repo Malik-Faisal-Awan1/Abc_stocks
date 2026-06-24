@@ -1,17 +1,9 @@
-"""
-Backtesting module.
-Replays historical signal performance.
-"""
-
 from src.indicators import calculate_rsi, calculate_macd, composite_score
 from decimal import Decimal
 import pandas as pd
 
 def run_backtest(ohlcv_df: pd.DataFrame, ticker: str) -> dict:
-    """
-    Simulates historical signal performance using a rolling window approach.
-    """
-    # Drop NaNs
+    
     initial_len = len(ohlcv_df)
     df = ohlcv_df.dropna()
     dropped_rows = initial_len - len(df)
@@ -29,10 +21,8 @@ def run_backtest(ohlcv_df: pd.DataFrame, ticker: str) -> dict:
     neutral_days = 0
 
     for i in range(WARMUP, len(df) - 1):
-        # Only use data available on day i — no future data
         slice_close = df["close"].iloc[:i+1]
 
-        # Recalculate indicators fresh on this slice
         rsi = calculate_rsi(slice_close)
         macd_line, signal_line, _ = calculate_macd(slice_close)
         score = composite_score(rsi, macd_line, signal_line)
@@ -41,7 +31,6 @@ def run_backtest(ohlcv_df: pd.DataFrame, ticker: str) -> dict:
         close_t = df["close"].iloc[i]
         close_t1 = df["close"].iloc[i + 1]
 
-        # Determine hit/miss
         if signal == "Bullish":
             if close_t1 > close_t:
                 result = "Hit"
