@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 import config
 
 class ThrottleError(Exception):
-
+    """Finnhub per-minute limit hit (HTTP 429). Retry after 1s."""
 class DataFetchError(Exception):
-
+    """API returned malformed or empty data."""
 def fetch_ohlcv(ticker: str) -> pd.DataFrame:
     if config.USE_MOCK:
         return _load_mock_ohlcv(ticker)
