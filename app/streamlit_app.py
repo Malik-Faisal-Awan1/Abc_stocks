@@ -1,6 +1,5 @@
 import sys
 import os
-# Ensure the project root is on sys.path so that src.* imports resolve correctly
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import streamlit as st
@@ -16,10 +15,8 @@ from src.sentiment import parse_sentiment
 from src.backtester import run_backtest
 import re
 
-# 1. Page config
 st.set_page_config(page_title="ABC Stocks Dashboard", layout="wide")
 
-# Inject minimal CSS: Glassmorphism, modern tabs, and typography
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -101,7 +98,6 @@ CHART_TEMPLATE = dict(
     yaxis=dict(showgrid=False, zeroline=False, linecolor="#2D3748", tickfont=dict(color="#A0AEC0")),
 )
 
-# Default legend styling
 _LEGEND_DARK = dict(bgcolor="rgba(14,17,23,0.7)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1)
 
 C_BULLISH  = "#10B981"   # vivid emerald
@@ -124,7 +120,6 @@ def _validate_ticker(raw_input: str) -> tuple[bool, str]:
         return False, f"'{ticker}' contains invalid characters. Use letters only (e.g. AAPL)."
     return True, ticker  # Return cleaned ticker on success
 
-# 2. Session state initialisation block
 if "quota_tracker" not in st.session_state:
     st.session_state["quota_tracker"] = QuotaTracker()
 if "ticker" not in st.session_state:
@@ -159,7 +154,6 @@ with st.sidebar:
     if st.session_state["last_fetch_timestamp"]:
         st.caption(f"Last updated: {st.session_state['last_fetch_timestamp']}")
 
-# 5. Input form
 with st.form("ticker_form"):
     raw_ticker = st.text_input("Ticker Symbol", placeholder="e.g. AAPL", value=st.session_state["ticker"])
     submitted = st.form_submit_button("Analyse")
@@ -172,7 +166,6 @@ if submitted:
     ticker = result  # Cleaned, uppercase ticker
     st.session_state["ticker"] = ticker
 
-    # 6. Main area — Loading state
     with st.spinner(f"Fetching data for {ticker}..."):
         if not config.USE_MOCK:
             st.session_state["quota_tracker"].record_call()
@@ -194,16 +187,13 @@ if submitted:
         except Exception as e:
             st.error("Data provider returned an unexpected response. Using cached data if available.")
 
-# 4. Main area — Empty state
 if st.session_state["current_data"] is None and not submitted:
     st.info("Enter a ticker symbol and click Analyse to fetch data.")
 
-# 7. Main area — Data state
 if st.session_state["current_data"] is not None:
     df = st.session_state["current_data"]
     sent_raw = st.session_state["current_sentiment"]
-    
-    # Calculate indicators
+
     rsi = calculate_rsi(df["close"])
     macd_line, signal_line, hist = calculate_macd(df["close"])
     comp_score = composite_score(rsi, macd_line, signal_line)
@@ -300,7 +290,6 @@ if st.session_state["current_data"] is not None:
 
         st.write(f"Hits: {backtest_result['hits']}, Misses: {backtest_result['misses']}, Neutral: {backtest_result['neutral_days']}")
 
-        # Section B - Plot equity curve
         eq_curve = backtest_result["equity_curve"]
         fig_eq = go.Figure()
         
@@ -339,7 +328,6 @@ if st.session_state["current_data"] is not None:
             "not a trading system."
         )
 
-        # Section C - Signal Distribution
         col_dist1, col_dist2 = st.columns(2)
         with col_dist1:
             st.markdown("**Signal Distribution**")
@@ -383,12 +371,9 @@ if st.session_state["current_data"] is not None:
             else:
                 st.write("No signals generated.")
 
-        # Section D - Signal Log Table
         with st.expander("View Signal Log"):
             if not log_df.empty:
                 st.dataframe(log_df[["date", "signal", "hit_miss", "close_T", "close_T1", "equity_after"]])
             else:
                 st.write("No signal data.")
-                
-        # Section E - Methodology Note
-        st.info("Info: **How this works**\n\nThe backtester replays the same RSI + MACD composite signal logic used in the Analysis tab against the last 90 days of daily price data. A signal is generated for each trading day after the 33-day warm-up period. Neutral signals (confidence 40-60%) are excluded from the accuracy calculation.\n50% accuracy = random chance. Above 50% suggests the signal has some directional tendency for this asset in this period. Below 50% suggests the opposite.\nThis is descriptive, not predictive.\nFinal equity can differ from accuracy because the magnitude of price movement on correct signal days may be larger than on incorrect signal days -- a few large wins can outweigh many small losses, and vice versa.")
+        st.info("Info: **ABC_Stocks")
