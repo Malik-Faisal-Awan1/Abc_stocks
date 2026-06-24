@@ -4,9 +4,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def _get_api_key() -> str:
+    """
+    Supports both local .env and Streamlit Cloud secrets.toml.
+    Import order: st.secrets first (cloud), os.getenv second (local).
+    """
     try:
         import streamlit as st
         key = st.secrets.get("FINNHUB_API_KEY", None)
+@@ -24,15 +20,13 @@ def _get_api_key() -> str:
         if key:
             return key
     except Exception:
