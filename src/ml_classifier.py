@@ -1,10 +1,5 @@
 # src/ml_classifier.py
-"""
-ML Signal Classifier module.
-Trains a Logistic Regression pipeline on backtesting signal_log to predict
-whether the current signal is likely correct.
-No Streamlit imports. No data fetching. Data received from app layer.
-"""
+
 import pandas as pd
 import numpy as np
 from pathlib import Path
