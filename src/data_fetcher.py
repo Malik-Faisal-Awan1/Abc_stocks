@@ -7,10 +7,8 @@ from datetime import datetime, timedelta
 import config
 
 class ThrottleError(Exception):
-    """Finnhub per-minute limit hit (HTTP 429). Retry after 1s."""
 
 class DataFetchError(Exception):
-    """API returned malformed or empty data."""
 
 def fetch_ohlcv(ticker: str) -> pd.DataFrame:
     if config.USE_MOCK:
@@ -107,9 +105,7 @@ def _fetch_live_ohlcv(ticker: str) -> pd.DataFrame:
     return _parse_ohlcv_response(data)
 
 def _fetch_live_sentiment(ticker: str) -> dict:
-    """
-    Fetches live sentiment from both /news-sentiment and /company-news endpoints.
-    """
+    
     to_date = datetime.now().strftime('%Y-%m-%d')
     from_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
     
