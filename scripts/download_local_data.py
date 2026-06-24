@@ -21,20 +21,15 @@ def download_data():
     for ticker in TICKERS:
         try:
             print(f"Fetching {ticker}...")
-            # Use interval="1d"
             df = yf.download(ticker, start=start_date.strftime("%Y-%m-%d"), end=end_date.strftime("%Y-%m-%d"), progress=False)
             
             if df.empty:
                 print(f"Warning: No data for {ticker}")
                 continue
-                
-            # yfinance returns multi-index columns in recent versions if not careful, 
-            # but for a single ticker it should be single-level or easily flattened.
             if isinstance(df.columns, pd.MultiIndex):
                 # Flatten multi-index
                 df.columns = [col[0] for col in df.columns]
                 
-            # Finnhub format
             data = {
                 "s": "ok",
                 "t": [int(x.timestamp()) for x in df.index],
@@ -54,7 +49,6 @@ def download_data():
             print(f"Failed to fetch {ticker}: {e}")
 
 if __name__ == "__main__":
-    # need pandas for MultiIndex check
     import pandas as pd
     download_data()
     print("Done!")
