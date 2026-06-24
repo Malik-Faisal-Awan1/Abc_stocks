@@ -1,8 +1,5 @@
 def parse_sentiment(sentiment_response: dict, news_response: list) -> dict:
-    """
-    Returns a normalised sentiment dict for UI consumption.
-    Never raises — returns a degraded result with is_valid=False if data is missing.
-    """
+    
     try:
         bullish_pct = sentiment_response.get("sentiment", {}).get("bullishPercent", None)
         bearish_pct = sentiment_response.get("sentiment", {}).get("bearishPercent", None)
