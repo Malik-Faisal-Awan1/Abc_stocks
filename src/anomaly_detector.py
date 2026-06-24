@@ -1,9 +1,5 @@
 # src/anomaly_detector.py
-"""
-Anomaly Detection module.
-Trains Isolation Forest on daily OHLCV features to flag statistically
-unusual trading days. No Streamlit imports. No data fetching.
-"""
+
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import IsolationForest
@@ -28,7 +24,6 @@ def detect_anomalies(ohlcv_df: pd.DataFrame) -> dict:
     if len(ohlcv_df) < 10:
         raise ValueError("Insufficient data for anomaly detection. Minimum 10 rows required.")
 
-    # Feature engineering — all derived from raw OHLCV
     features = pd.DataFrame(index=ohlcv_df.index)
 
     features["daily_return"] = ohlcv_df["close"].pct_change()
@@ -44,17 +39,14 @@ def detect_anomalies(ohlcv_df: pd.DataFrame) -> dict:
         ohlcv_df[["open", "close"]].min(axis=1) - ohlcv_df["low"]
     ) / ohlcv_df["close"]
 
-    # Drop NaN rows (first few rows have NaN from rolling/pct_change)
     features = features.dropna()
 
     if len(features) < 10:
         raise ValueError("Insufficient data after dropping NaN rows.")
 
-    # Scale features
     scaler = StandardScaler()
     X = scaler.fit_transform(features)
 
-    # Train Isolation Forest — fixed parameters, not tunable
     model = IsolationForest(
         n_estimators=100,
         contamination=0.05,   # ~5% of days expected to be anomalous
@@ -62,7 +54,6 @@ def detect_anomalies(ohlcv_df: pd.DataFrame) -> dict:
     )
     model.fit(X)
 
-    # Get labels and scores
     labels = model.predict(X)        # -1 = anomaly, 1 = normal
     scores = model.decision_function(X)  # More negative = more anomalous
 
