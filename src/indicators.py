@@ -1,10 +1,6 @@
 import pandas as pd
 
 def calculate_rsi(close: pd.Series, period: int = 14) -> pd.Series:
-    """
-    Wilder's RSI. Alpha = 1/period (not 2/(period+1)).
-    Reference: Wilder (1978). Verified against rsi_reference.md.
-    """
     delta = close.diff()
     gain = delta.clip(lower=0)
     loss = -delta.clip(upper=0)
@@ -23,10 +19,7 @@ def calculate_macd(
     slow: int = 26,
     signal: int = 9
 ) -> tuple[pd.Series, pd.Series, pd.Series]:
-    """
-    Returns (macd_line, signal_line, histogram).
-    Uses standard EMA (alpha = 2/(span+1)), not Wilder smoothing.
-    """
+    
     ema_fast = close.ewm(span=fast, adjust=False).mean()
     ema_slow = close.ewm(span=slow, adjust=False).mean()
     macd_line = ema_fast - ema_slow
@@ -35,12 +28,7 @@ def calculate_macd(
     return macd_line, signal_line, histogram
 
 def composite_score(rsi_series: pd.Series, macd_line: pd.Series, signal_line: pd.Series) -> dict:
-    """
-    Combines RSI and MACD into a single directional confidence score.
-
-    Returns a dict, not a float. The dict carries the signal, score,
-    and the components used — so the UI can show the reasoning.
-    """
+    
     latest_rsi = rsi_series.iloc[-1]
     latest_macd = macd_line.iloc[-1]
     latest_signal = signal_line.iloc[-1]
