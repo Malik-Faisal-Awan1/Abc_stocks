@@ -8,6 +8,12 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-FF4B4B.svg?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.4+-F7931E.svg?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 
+<br>
+
+<img width="900" alt="ABC Stocks Dashboard - main view" src="https://github.com/user-attachments/assets/3c9df1e2-95b3-4419-a237-188b83ac5505" />
+
+<sub>Main dashboard view</sub>
+
 </div>
 
 ---
@@ -23,6 +29,16 @@ ABC Stocks Dashboard is a premium financial analysis tool combining traditional 
     *   **Signal Confidence:** Logistic Regression models trained on the fly using session data to predict the reliability of current trading signals.
     *   **Anomaly Detection:** Unsupervised Isolation Forests flagging statistically unusual trading days based on price/volume action.
 *   **Local Data Ingestion:** Downloads real OHLCV market data via `yfinance` to operate completely offline without restrictive paid API limits.
+
+<div align="center">
+
+<br>
+
+<img width="900" alt="ABC Stocks Dashboard - analysis view" src="https://github.com/user-attachments/assets/2b2978c8-2cdf-49be-81ff-acf3853e89bc" />
+
+<sub>Analysis and ML insights view</sub>
+
+</div>
 
 ---
 
